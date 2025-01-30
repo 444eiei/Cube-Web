@@ -1,4 +1,4 @@
-import * as THREE from './node_modules/three/build/three.module.js';
+import * as THREE from 'https://unpkg.com/three@0.172.0/build/three.module.js';
 import { OrbitControls } from './vendor_mods/three/examples/jsm/controls/OrbitControls.js';
 
 // Scene, Camera, Renderer
