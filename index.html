@@ -4,33 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Template</title>
+    <title>Cube and Prism Visualizer</title>
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #303040;
             color: white;
+            line-height: 1.6;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px;
+            padding: 20px;
             background-color: rgba(30, 30, 47, 0.95);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         header .logo {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: bold;
+            color: #ffd700;
         }
 
         nav a {
             color: white;
             text-decoration: none;
-            margin: 0 10px;
-            transition: color 0.3s;
+            margin: 0 15px;
+            transition: color 0.3s ease;
         }
 
         nav a:hover {
@@ -38,76 +41,105 @@
         }
 
         main {
+            padding: 40px;
             text-align: center;
-            padding: 40px 20px;
+            margin: auto;
+            margin-top: 15px;
+            max-width: 800px;
+            background-color: rgba(30, 30, 47, 0.85);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         main h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 2.5rem;
             color: #ffd700;
+            margin-bottom: 25px;
+        }
+
+        main h2 {
+            color: #0078d7;
+            margin-top: 30px;
         }
 
         main p {
-            font-size: 1.125rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 30px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        .important-def {
+            font-weight: bold;
+            color: #ffd700;
         }
 
         main button {
             background-color: #0078d7;
-            border: none;
             color: white;
-            font-size: 1rem;
-            padding: 10px 20px;
+            padding: 12px 24px;
+            border: none;
             border-radius: 8px;
+            font-size: 1rem;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         main button:hover {
             background-color: #005bb5;
-            transform: scale(1.1);
+            transform: scale(1.05);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(30, 30, 47, 0.95);
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 40px;
         }
     </style>
 </head>
 
 <body>
     <header>
-        <div class="logo">Your Logo</div>
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">News</a>
-            <a href="#">App</a>
-            <a href="#">About Us</a>
-            <a href="#">Contact</a>
-            <a href="#">FAQ</a>
-        </nav>
+        <div class="logo">เว็บไซต์จำลองปริซึมฐานสามเหลี่ยมหน้าจั่วในลูกบาศก์</div>
     </header>
 
     <main>
-        <h1>Website Template</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas in tellus tempus, semper magna at, varius
-            elit. Mauris dui mi, varius pulvinar diam sed, volutpat egestas velit. Curabitur nec varius nibh. Maecenas
-            porta, ipsum non placerat ultricies, tortor ligula commodo sapien, non pretium ipsum sem sit amet lectus.
-            Vivamus pretium velit et risus consectetur, at fermentum purus posuere. Vestibulum porta, ante vestibulum
-            blandit rhoncus, tellus turpis pulvinar tellus, eu placerat augue orci ut risus. Donec leo metus, fringilla
-            et efficitur ut, viverra vitae felis. Fusce eget sodales velit. Vivamus quis ultricies odio. Aliquam aliquam
-            malesuada facilisis.</p>
-        <br>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas in tellus tempus, semper magna at, varius
-            elit. Mauris dui mi, varius pulvinar diam sed, volutpat egestas velit. Curabitur nec varius nibh. Maecenas
-            porta, ipsum non placerat ultricies, tortor ligula commodo sapien, non pretium ipsum sem sit amet lectus.
-            Vivamus pretium velit et risus consectetur, at fermentum purus posuere. Vestibulum porta, ante vestibulum
-            blandit rhoncus, tellus turpis pulvinar tellus, eu placerat augue orci ut risus. Donec leo metus, fringilla
-            et efficitur ut, viverra vitae felis. Fusce eget sodales velit. Vivamus quis ultricies odio. Aliquam aliquam
-            malesuada facilisis.</p>
-            <button onclick="navigateToCube()">Explore 3D Cube</button>
+        <h1>จำลองปริซึมฐานสามเหลี่ยมหน้าจั่วในลูกบาศก์ขนาด n x n x n</h1>
+
+        <section id="cube-definition">
+            <h2>ข้อมูลพื้นฐานของลูกบาศก์</h2>
+            <p>
+                 <span class="important-def">ลูกบาศก์ (Cube)</span> คือ รูปทรงเรขาคณิตสามมิติที่มีลักษณะเฉพาะคือมีทั้งหมด 6 ด้าน โดยแต่ละด้านเป็นรูปสี่เหลี่ยมจัตุรัส ซึ่งมีความยาวขอบแต่ละด้านเท่ากันทุกด้าน
+                โดยสูตรของการหา
+                <span class="important-def">ปริมาตรของลูกบาศก์คือ ด้าน × ด้าน × ด้าน (ด้าน³)</span>.
+            </p>
+        </section>
+
+        <section id="prism-definition">
+            <h2>ข้อมูลพื้นฐานของปริซึม</h2>
+            <p>
+                <span class="important-def">ปริซึม (Prism)</span> คือ รูปทรงเรขาคณิตสามมิติที่มีลักษณะเป็นรูปหลายเหลี่ยม ที่ทั้งสองฐานเป็นรูปหลายเหลี่ยมเดียวกัน 
+                และผิวข้างที่เชื่อมระหว่างฐานทั้งสองเป็นสี่เหลี่ยมผืนผ้า หรือรูปร่างสี่เหลี่ยมอื่นๆ โดยมีขนาดและรูปร่างของฐานเท่ากันทุกมุม
+                <span class="important-def">ปริซึมฐานสามเหลี่ยมหน้าจั่ว</span>มีหน้าสี่เหลี่ยมผืนผ้า 3 หน้าและหน้าสามเหลี่ยมหน้าจั่ว 2 หน้า
+            </p>
+        </section>
+
+        <section id="project-description">
+            <h2>ภาพรวมโครงงาน</h2>
+            <p>
+                โครงงานนี้้จะแสดงวิธีที่ปริซึมฐานสามเหลี่ยมหน้าจั่วสามารถสร้างขึ้นได้ในลูกบาศก์ขนาด n x n x n
+            </p>
+            <button onclick="navigateToCube()">เริ่มต้นใช้งาน</button>
+        </section>
     </main>
+
     <script>
         function navigateToCube() {
             window.location.href = 'cube.html';
         }
     </script>
 </body>
+
 </html>

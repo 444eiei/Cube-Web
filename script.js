@@ -1,4 +1,4 @@
-import * as THREE from 'https://unpkg.com/three@0.172.0/build/three.module.js';
+import * as THREE from './node_modules/three/build/three.module.js';
 import { OrbitControls } from './vendor_mods/three/examples/jsm/controls/OrbitControls.js';
 
 // Scene, Camera, Renderer
@@ -26,6 +26,15 @@ let triangles = []; // Array to store all triangles
 let currentTriangleIndex = 0; // Index of the currently displayed triangle
 let triangleMesh = null; // Mesh for the current triangle
 
+function createLine(sx, sy, sz, ex, ey, ez) {
+    const LineGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(sx,sy,sz),
+        new THREE.Vector3(ex,ey,ez),
+    ]);
+    const Lines = new THREE.Line(LineGeometry, new THREE.LineBasicMaterial({ color: 0x5555ff }));
+    gridGroup.add(Lines);
+}
+
 // Function to create grids for the NxNxN cube
 function createGrids(n) {
     // Clear previous grids
@@ -34,39 +43,40 @@ function createGrids(n) {
     }
     gridGroup = new THREE.Group();
 
-    const size = 1; // Cube size
-    const step = size / n; // Size of each grid cell
-
-    // Add grid lines for each axis
+    const step = 1 / n; // Size of each grid cell
     for (let i = 0; i <= n; i++) {
-        const position = -size / 2 + i * step;
-
-        // Horizontal grid lines (X-Y plane)
-        const horizontalGeometry = new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(-size / 2, position, size / 2),
-            new THREE.Vector3(size / 2, position, size / 2),
-        ]);
-        const horizontalLine = new THREE.Line(horizontalGeometry, new THREE.LineBasicMaterial({ color: 0x5555ff }));
-        gridGroup.add(horizontalLine);
-
-        const verticalGeometry = new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(position, -size / 2, size / 2),
-            new THREE.Vector3(position, size / 2, size / 2),
-        ]);
-        const verticalLine = new THREE.Line(verticalGeometry, new THREE.LineBasicMaterial({ color: 0x5555ff }));
-        gridGroup.add(verticalLine);
-
-        // Depth grid lines (Z axis)
-        const depthGeometry = new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(position, position, -size / 2),
-            new THREE.Vector3(position, position, size / 2),
-        ]);
-        const depthLine = new THREE.Line(depthGeometry, new THREE.LineBasicMaterial({ color: 0x5555ff }));
-        gridGroup.add(depthLine);
+        for (let j = 0; j <= n; j++){
+            const ypos = (-1/2) + i * step;
+            const zpos = (-1/2) + j * step;
+            if ((i != 0 && j != 0 && i != n && j != n) ||
+            ((i == 0 || i == n) && j != 0 && j != n) || 
+            ((j == 0 || j == n) && i != 0 && i != n)
+            ){
+                createLine(-1/2, ypos, zpos, 1/2, ypos, zpos);
+                createLine(zpos, ypos, -1/2, zpos, ypos, 1/2);
+                createLine(ypos, -1/2, zpos, ypos, 1/2, zpos);
+            }
+        }
     }
-
     // Add the grid group to the scene
     scene.add(gridGroup);
+}
+
+function setTriangle(x1, y1, x2, y2, x3, y3, z1, z2){
+    const p00 = new THREE.Vector3(x1, y1, z1);
+    const p01 = new THREE.Vector3(x2, y2, z1);
+    const p02 = new THREE.Vector3(x3, y3, z1);
+
+    const p10 = new THREE.Vector3(x1, y1, z2);
+    const p11 = new THREE.Vector3(x2, y2, z2);
+    const p12 = new THREE.Vector3(x3, y3, z2);
+
+    return [
+        p00, p10, p00,
+        p01, p11, p01,
+        p02, p12, p02, p00,
+        p10, p11, p12, p10
+    ]
 }
 
 // Function to Create and Add Triangles
@@ -75,39 +85,28 @@ function createTriangles(n) {
     if (triangleMesh) scene.remove(triangleMesh);
     triangles = [];
 
-    const size = 1; // Cube size
-    const step = size / n;
-    const zPosition = 0.5; // Place triangles in the middle of the cube
+    const step = 1 / n;
+    const z1 = 1 / 2; // Place triangles in the middle of the cube
     const x = 0, y = 0;
     // for (let i = n; i > 0; i--){
     for (let i = 1; i <= n; i++){
-        // const step = size / i; // Size of each grid cell
-
-        // Generate Right-Angled Triangles for the Middle Plane (z = 0)
-        // for (let x = 0; x < 1; x++) {
-            // for (let y = 0; y < 1; y++) {
-                // const x0 = x * step - size / 2;
-                // const y0 = y * step - size / 2;
-                // const x1 = (x + 1) * step - size / 2;
-                // const y1 = (y + 1) * step - size / 2;
-                const x0 = x * step * i - size / 2;
-                const y0 = y * step * i - size / 2;
-                const x1 = (x + 1) * step * i - size / 2;
-                const y1 = (y + 1) * step * i - size / 2;
-                const midX = (x0 + x1) / 2;
-                const midY = (y0 + y1) / 2;
-    
-                // Define the 8 triangles for this cell
-                triangles.push([new THREE.Vector3(x0, y0, zPosition), new THREE.Vector3(x1, y0, zPosition), new THREE.Vector3(x0, y1, zPosition), new THREE.Vector3(x0, y0, zPosition)]);
-                triangles.push([new THREE.Vector3(x0, y0, zPosition), new THREE.Vector3(x1, y0, zPosition), new THREE.Vector3(x1, y1, zPosition), new THREE.Vector3(x0, y0, zPosition)]);
-                triangles.push([new THREE.Vector3(x0, y0, zPosition), new THREE.Vector3(x1, y1, zPosition), new THREE.Vector3(x0, y1, zPosition), new THREE.Vector3(x0, y0, zPosition)]);
-                triangles.push([new THREE.Vector3(x1, y0, zPosition), new THREE.Vector3(x0, y1, zPosition), new THREE.Vector3(x1, y1, zPosition), new THREE.Vector3(x1, y0, zPosition)]);
-                triangles.push([new THREE.Vector3(x0, y0, zPosition), new THREE.Vector3(midX, midY, zPosition), new THREE.Vector3(x1, y0, zPosition), new THREE.Vector3(x0, y0, zPosition)]);
-                triangles.push([new THREE.Vector3(x0, y0, zPosition), new THREE.Vector3(midX, midY, zPosition), new THREE.Vector3(x0, y1, zPosition), new THREE.Vector3(x0, y0, zPosition)]);
-                triangles.push([new THREE.Vector3(x1, y1, zPosition), new THREE.Vector3(midX, midY, zPosition), new THREE.Vector3(x0, y1, zPosition), new THREE.Vector3(x1, y1, zPosition)]);
-                triangles.push([new THREE.Vector3(x1, y1, zPosition), new THREE.Vector3(midX, midY, zPosition), new THREE.Vector3(x1, y0, zPosition), new THREE.Vector3(x1, y1, zPosition)]);
-            // }
-        // }
+        const x0 = x * step * i - 1 / 2;
+        const y0 = y * step * i - 1 / 2;
+        const x1 = (x + 1) * step * i - 1 / 2;
+        const y1 = (y + 1) * step * i - 1 / 2;
+        const midX = (x0 + x1) / 2;
+        const midY = (y0 + y1) / 2;
+        const z2 = z1 - step * i;
+        
+        // Define the triangle points for this cell
+        triangles.push(setTriangle(x0, y0, x1, y0, x0, y1, z1, z2));
+        triangles.push(setTriangle(x0, y0, x1, y0, x1, y1, z1, z2));
+        triangles.push(setTriangle(x0, y0, x1, y1, x0, y1, z1, z2));
+        triangles.push(setTriangle(x1, y0, x0, y1, x1, y1, z1, z2));
+        triangles.push(setTriangle(x0, y0, midX, midY, x1, y0, z1, z2));
+        triangles.push(setTriangle(x0, y0, midX, midY, x0, y1, z1, z2));
+        triangles.push(setTriangle(x1, y1, midX, midY, x0, y1, z1, z2));
+        triangles.push(setTriangle(x1, y1, midX, midY, x1, y0, z1, z2));
     }
 
     displayTriangle(0); // Display the first triangle
@@ -136,7 +135,7 @@ function displayTriangleCounts(n) {
         totalTriangles += count;
 
         const listItem = document.createElement("li");
-        listItem.textContent = `${size}x${size} Triangles: ${count}`;
+        listItem.textContent = `ขนาด ${size}x${size}x${size}: ${count} รูป`;
         listItem.dataset.size = size; // Store the triangle size
         listItem.addEventListener("click", () => {
             displayTrianglesOfSize(size); // Display triangles of this size
@@ -145,7 +144,7 @@ function displayTriangleCounts(n) {
         triangleCountList.appendChild(listItem);
     }
 
-    totalTrianglesElement.textContent = `Total Triangles: ${totalTriangles}`;
+    totalTrianglesElement.textContent = `จำนวนปริซึมสามเหลี่ยมหน้าจั่วทั้งหมด ${totalTriangles} รูป`;
 }
 
 // Function to Display Triangles of Selected Size
