@@ -229,12 +229,138 @@
                 font-size: 1.1rem;
             }
         }
+
+        /* Popup Modal Styles */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 163, 178, 0.8);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-overlay.show {
+            opacity: 1;
+        }
+
+        .popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: popupSlideIn 0.3s ease;
+        }
+
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .popup-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #AF1E2D;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .popup-instructions {
+            text-align: left;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .popup-instructions ol {
+            margin-left: 20px;
+        }
+
+        .popup-instructions li {
+            margin-bottom: 15px;
+        }
+
+        .popup-close {
+            background: linear-gradient(135deg, #af1e2d 0%, #d42e3f 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 25px;
+            box-shadow: 0 4px 15px rgba(175, 30, 45, 0.3);
+        }
+
+        .popup-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(175, 30, 45, 0.4);
+        }
+
+        .help-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #af1e2d 0%, #d42e3f 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(175, 30, 45, 0.3);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .help-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(175, 30, 45, 0.4);
+        }
     </style>
 </head>
 
 <body>
     <header>
     </header>
+
+    <!-- Help Button -->
+    <button class="help-button" onclick="showPopup()">?</button>
+
+    <!-- Popup Modal -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content">
+            <h2 class="popup-title">How to use PrismatiCubic 101</h2>
+            <div class="popup-instructions">
+                <ol>
+                    <li>Press <span class="important-def">"Get Started"</span> to begin the website</li>
+                    <li>Add the size of the cube that you want</li>
+                    <li>Press <span class="important-def">"Show Prism"</span> to show total prisms and 3D picture</li>
+                </ol>
+            </div>
+            <button class="popup-close" onclick="hidePopup()">Got it!</button>
+        </div>
+    </div>
 
     <main>
         <h1>PrismatiCubic</h1>
@@ -267,6 +393,41 @@
         function navigateToCube() {
             window.location.href = 'cube.html';
         }
+
+        function showPopup() {
+            const popup = document.getElementById('popupOverlay');
+            popup.style.display = 'block';
+            setTimeout(() => {
+                popup.classList.add('show');
+            }, 10);
+        }
+
+        function hidePopup() {
+            const popup = document.getElementById('popupOverlay');
+            popup.classList.remove('show');
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300);
+        }
+
+        // Close popup when clicking outside the content
+        document.getElementById('popupOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hidePopup();
+            }
+        });
+
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hidePopup();
+            }
+        });
+
+        // Show popup when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            showPopup();
+        });
     </script>
 </body>
 
